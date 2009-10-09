@@ -37,7 +37,7 @@ public abstract class BaseDict {
 	
 	/**
 	 * find translation of word in target language 
-	 * @param word word to be tanslated
+	 * @param word word to be translated
 	 * @param language target language
 	 * @return translation, null if the word is not included in this dict 
 	 */
@@ -55,4 +55,11 @@ public abstract class BaseDict {
 	 * @return suggested words, sort by length from shortest to longest
 	 */
 	public abstract ArrayList<String> genAutoCompleteWords(String word);
+	
+	/**
+	 * get sample sentences of target word
+	 * @param word target words
+	 * @return sample sentences, not null
+	 */
+	public abstract ArrayList<Sentence> getSampleSentences(String word);
 }

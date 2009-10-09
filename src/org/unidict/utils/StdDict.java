@@ -50,5 +50,11 @@ public class StdDict extends BaseDict {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public ArrayList<Sentence> getSampleSentences(String word) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
