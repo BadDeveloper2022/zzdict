@@ -20,6 +20,7 @@ public class FileFormatErrorException extends Exception {
 
 	/**
 	 * convert this exception to a readable string that contain filename and pos.<br>
+	 * pos is estimated, because we use buffered input stream
 	 * It will help us to find where is wrong.
 	 */
 	public String toString(){
