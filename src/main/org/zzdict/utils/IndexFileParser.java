@@ -39,7 +39,7 @@ public class IndexFileParser {
 	 * @exception IOException if I/O error occurs
 	 * @exception FileNotFoundException if file named indexFileName is not found 
 	 */
-	public synchronized Map<String, DictDataInfo> parseIndexFile(String indexFileName) throws IOException, FileNotFoundException{
+	public synchronized Map<String, DictDataInfo> parseIndexFile() throws IOException, FileNotFoundException{
 		Map<String,DictDataInfo> map = new ConcurrentHashMap<String, DictDataInfo>();
 		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(indexFileName));
 		String word;
