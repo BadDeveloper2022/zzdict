@@ -1,4 +1,4 @@
-package org.unidict.utils;
+package org.zzdict.utils;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
