@@ -1,12 +1,13 @@
 package org.zzdict.utils;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import junit.framework.Assert;
 import org.junit.Test;
 
 public class IndexFileParserTest {
@@ -16,17 +17,29 @@ public class IndexFileParserTest {
 		IndexFileParser ifp; 
 		Map<String,DictDataInfo> resultMap;
 
-		// test1.idx
-		ifp = new IndexFileParser("test1.idx");
+		// stardict1.3.idx contains 51214 words file size is 899,574 bytes
+		ifp = new IndexFileParser("src/test/resources/stardict/stardict1.3-2.4.2/stardict1.3.idx");
 		try {
 			resultMap = ifp.parseIndexFile();
-			Assert.assertEquals(0, 0);
+			int i=0;
+			for(Entry<String, DictDataInfo> entry : resultMap.entrySet()){
+				System.out.println("word: "+entry.getKey());
+				System.out.println("offset: "+entry.getValue().wordDataOffset);
+				System.out.println("size: "+entry.getValue().wordDataSize);
+				i++;
+				if (i > 1000) break;
+			}
+			
+			//assert the count of words is correct
+			assertEquals(resultMap.size(), 51214);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (FileFormatErrorException e) {
+			e.printStackTrace();
+			fail("file format is wrong. Reason is "+e);
 		}
-		fail("Not yet implemented");
 	}
 
 }
