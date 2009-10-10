@@ -1,4 +1,4 @@
-package org.unidict.utils;
+package org.zzdict.utils;
 
 public class Word {
 	
