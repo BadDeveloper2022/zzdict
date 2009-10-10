@@ -14,6 +14,7 @@ public class IndexFileParser {
 	 */
 	private String wordEncoding = "UTF8";
 	private String indexFileName; 
+	private FileInputStream fis;
 	private int readlimit = 8192;
 	
 	public IndexFileParser(String indexFileName){
@@ -38,16 +39,18 @@ public class IndexFileParser {
 	 *    word_data_size;  // word data's total size in .dict file     
 	 * @exception IOException if I/O error occurs
 	 * @exception FileNotFoundException if file named indexFileName is not found 
+	 * @throws FileFormatErrorException if file format is wrong
 	 */
-	public synchronized Map<String, DictDataInfo> parseIndexFile() throws IOException, FileNotFoundException{
+	public synchronized Map<String, DictDataInfo> parseIndexFile() throws IOException, FileNotFoundException, FileFormatErrorException{
 		Map<String,DictDataInfo> map = new ConcurrentHashMap<String, DictDataInfo>();
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(indexFileName));
+		fis = new FileInputStream(indexFileName);
+		BufferedInputStream bis = new BufferedInputStream(fis);
 		String word;
 		while((word = readString(bis)) != null){
-			map.put(word, new DictDataInfo(readLong(bis),readInt(bis)));
+			map.put(word, new DictDataInfo(readInt(bis),readInt(bis)));
 		}
 		
-		return null;
+		return map;
 	}
 	
 	/**
@@ -55,8 +58,9 @@ public class IndexFileParser {
 	 * @param bis the buffered input stream
 	 * @return read string, null if input stream reach the end 
 	 * @throws IOException 
+	 * @throws FileFormatErrorException if file format is wrong
 	 */
-	private String readString(BufferedInputStream bis) throws IOException{
+	private String readString(BufferedInputStream bis) throws IOException, FileFormatErrorException{
 		bis.mark(readlimit);
 		int pos=getNullCharPosition(bis);
 		bis.reset();
@@ -73,11 +77,12 @@ public class IndexFileParser {
 	/**
 	 * get null char position
 	 * @param bis buffered input stream
-	 * @return null char position, -1 if input stream reach the end
+	 * @return null char position
 	 * @throws IOException
+	 * @throws FileFormatErrorException if file format is wrong
 	 */
 	private int getNullCharPosition(BufferedInputStream bis)
-			throws IOException {
+			throws IOException, FileFormatErrorException {
 		int length;
 		byte[] buf = new byte[256];
 		int pos = -1;
@@ -102,18 +107,33 @@ public class IndexFileParser {
 	 * read long from a buffered input stream, bytes are big endian
 	 * @param bis the  buffered input stream
 	 * @return read long, -1 if input stream reach the end
+	 * @throws FileFormatErrorException if file format is wrong
+	 * @throws IOException 
 	 */
-	private long readLong(BufferedInputStream bis){
-		return -1;
+	@SuppressWarnings("unused")
+	private long readLong(BufferedInputStream bis) throws IOException, FileFormatErrorException{
+		return ((long)(readInt(bis)) << 32) | (readInt(bis) & 0xFFFFFFFFL);  
 	}
 	
 	/**
 	 * read integer from a buffered input stream, bytes are big endian
 	 * @param bis the  buffered input stream
 	 * @return read integer, -1 if input stream reach the end
+	 * @exception IOException 
+	 * @exception FileFormatErrorException if file format is wrong
 	 */	
-	private int readInt(BufferedInputStream bis){
-		return -1;
+	private int readInt(BufferedInputStream bis) throws IOException, FileFormatErrorException{
+		byte[] buf = new byte[4];
+		int length = bis.read(buf);
+		if(length < 4)
+			throw new FileFormatErrorException(this.indexFileName,fis.getChannel().position());
+		int value = 0;
+		
+		for(int i =0; i < 4; i++){      
+			   value <<= 8;  
+			   value |= (int)buf[i] & 0xFF;      
+			}
+		return value;
 	}
 }
 
