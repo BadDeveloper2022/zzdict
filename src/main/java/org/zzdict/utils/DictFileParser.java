@@ -1,5 +1,8 @@
 package org.zzdict.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class DictFileParser {
 /**
@@ -62,22 +65,6 @@ terminating '\0', while upper-case characters indicate that the data
 begins with a network byte-ordered guint32 that gives the length of 
 the following data's size(NOT the whole size which is 4 bytes bigger).
 
-'m'
-Word's pure text meaning.
-The data should be a utf-8 string ending with '\0'.
-
-'l'
-Word's pure text meaning.
-The data is NOT a utf-8 string, but is instead a string in locale
-encoding, ending with '\0'.  Sometimes using this type will save disk
-space, but its use is discouraged.
-
-'g'
-A utf-8 string which is marked up with the Pango text markup language.
-For more information about this markup language, See the "Pango
-Reference Manual."
-You might have it installed locally at:
-file:///usr/share/gtk-doc/html/pango/PangoMarkupFormat.html
 
 't'
 English phonetic string.
@@ -139,5 +126,75 @@ file's size, immediately followed by the file's content.
 this type identifier is reserved for experimental extensions.
 	
  */
+	
+	private String wordDataType;
 
+}
+
+enum WordDataType{
+	UTF8_PURE_TEXT ('m',"Word's pure text meaning. " +
+			"The data should be a utf-8 string ending with '\0'."),
+	ANSI_PURE_TEXT ('l',"Word's pure text meaning. " +
+			"The data is NOT a utf-8 string, " +
+			"but is instead a string in locale encoding, " +
+			"ending with '\0'.  " +
+			"Sometimes using this type will save disk space, " +
+			"but its use is discouraged."),
+	PANGO_MARKUP_UTF8_TEXT ('g', "A utf-8 string which is marked up with the Pango text markup language." +
+			"For more information about this markup language, " +
+			"See the \"Pango Reference Manual.\"" +
+			"You might have it installed locally at:" +
+			"file:///usr/share/gtk-doc/html/pango/PangoMarkupFormat.html"),
+	ENGLISH_PHONETIC_UTF8_TEXT ('t',"English phonetic string." +
+			"The data should be a utf-8 string ending with '\0'." +
+			"Here are some utf-8 phonetic characters:" +
+			"θʃŋʧðʒæıʌʊɒɛəɑɜɔˌˈːˑṃṇḷ" +
+			"æɑɒʌәєŋvθðʃʒɚːɡˏˊˋ"),
+	XDXF_MARKUP_UTF8_TEXT ('x',"A utf-8 string which is marked up with the xdxf language." +
+			"See http://xdxf.sourceforge.net" +
+			"StarDict have these extention:" +
+			"<rref> can have 'type' attribute, " +
+			"it can be 'image', 'sound', 'video' and 'attach'. " +
+			"<kref> can have 'k' attribute."),
+	CHINESE_YINBIAO_OR_JAPANESE_KANA('y',""),
+	POWERWORD_UTF8_XML('k',""),
+	MEDIA_WIKI_MAKRUP_UTF8_TEXT('w',""),
+	HTML('h',""),
+	WORDNET('n',""),
+	RESOURCE_FILES('r',""),
+	WAVE_FILE('W',""),
+	PICTURE_FILE('P',""),
+	RESERVED('X',"")
+	;
+	private char type;
+	private String comment;
+
+	private static Map<Character,WordDataType> map = new HashMap<Character,WordDataType>();
+
+	static{
+		for(WordDataType type:WordDataType.values()){
+			map.put(type.type, type);
+		}
+	}
+	
+	WordDataType(char type, String comment){
+		this.type = type;
+		this.comment = comment;
+	}
+	
+	public char type(){
+		return type;
+	}
+	
+	public String comment(){
+		return comment;
+	}
+	
+	public String toString(){
+		return "type: " + type + "\n" + "comment: "+ comment;
+	}
+	
+	public static WordDataType valueOf(char type){
+		return map.get(type);
+	}
 }
