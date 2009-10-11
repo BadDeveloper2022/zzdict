@@ -14,11 +14,11 @@ public class IndexFileParserTest {
 
 	@Test
 	public void testParseIndexFile() {
-		IndexFileParser ifp; 
+		StarDictIndexFileParser ifp; 
 		Map<String,DictDataInfo> resultMap;
 
 		// stardict1.3.idx contains 51214 words file size is 899,574 bytes
-		ifp = new IndexFileParser("src/test/resources/stardict/stardict1.3-2.4.2/stardict1.3.idx");
+		ifp = new StarDictIndexFileParser("src/test/resources/stardict/stardict1.3-2.4.2/stardict1.3.idx");
 		try {
 			resultMap = ifp.parseIndexFile();
 			int i=0;

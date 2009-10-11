@@ -7,7 +7,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class IndexFileParser {
+/**
+ * StarDict index file parser
+ * @author zzh
+ *
+ */
+public class StarDictIndexFileParser {
 	
 	/**
 	 * default wordEncoding is UTF8
@@ -17,11 +22,11 @@ public class IndexFileParser {
 	private FileInputStream fis;
 	private int readlimit = 8192;
 	
-	public IndexFileParser(String indexFileName){
+	public StarDictIndexFileParser(String indexFileName){
 		this.indexFileName = indexFileName;
 	}
 	
-	public IndexFileParser(String indexFileName, String wordEncoding){
+	public StarDictIndexFileParser(String indexFileName, String wordEncoding){
 		this.indexFileName = indexFileName;
 		this.wordEncoding = wordEncoding;
 	}
