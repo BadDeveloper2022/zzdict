@@ -1,11 +1,56 @@
 package org.zzdict.utils;
 
-import java.util.HashMap;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 
-
-public class DictFileParser {
+public class StarDictParser {
 	
+	/**
+	 * base folder of all dict files 
+	 */
+	private String dictFilesBaseFolder;
+	
+	/**
+	 * folder that contains dict files
+	 */
+	private String dictFilesFolder;
+	private StarDictInfoFileParser infoFileParser;
+	private StarDictIndexFileParser indexFileParser;
+
+	/**
+	 * index file info to help access target word data
+	 */
+	private Map<String, DictDataInfo> indexFileInfo;
+	
+	public StarDictParser(String dictFilesFolder) throws FileNotFoundException {
+		this.dictFilesFolder = dictFilesFolder;
+	}
+	
+	private StarDictInfo getStarDictInfo(){
+		return infoFileParser.parseStarDictInfo();
+	}
+	
+	private void loadDictIndexInfoToMemory(){
+		try {
+			this.indexFileInfo = indexFileParser.parseIndexFile();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileFormatErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * get word data of given word
+	 * @param word given word
+	 * @return word data
+	 */
 	public WordDataItem getWordData(String word){
 		// TODO parse file to get word data
 		/*
