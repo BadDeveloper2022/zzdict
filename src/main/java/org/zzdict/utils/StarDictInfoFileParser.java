@@ -42,61 +42,71 @@ public class StarDictInfoFileParser {
 /**
  * stardict dict infos
  * @author zzh
- *{2}. The ".ifo" file's format.
-The .ifo file has the following format:
-
-StarDict's dict ifo file
-version=2.4.2
-[options]
-
-Note that the current "version" string must be "2.4.2" or "3.0.0".  If it's not,
-then StarDict will refuse to read the file.
-If version is "3.0.0", StarDict will parse the "idxoffsetbits" option.
-
-[options]
----------
-In the example above, [options] expands to any of the following lines
-specifying information about the dictionary.  Each option is a keyword
-followed by an equal sign, then the value of that option, then a
-newline.  The options may be appear in any order.
-
-Note that the dictionary must have at least a bookname, a wordcount and a 
-idxfilesize, or the load will fail.  All other information is optional.  All 
-strings should be encoded in UTF-8.
-
-Available options:
-
-bookname=      // required
-wordcount=     // required
-synwordcount=  // required if ".syn" file exists.
-idxfilesize=   // required
-idxoffsetbits= // New in 3.0.0
-author=
-email=
-website=
-description=	// You can use <br> for new line.
-date=
-sametypesequence= // very important.
-dicttype=
-
-
-wordcount is the count of word entries in .idx file, it must be right.
-
-idxfilesize is the size(in bytes) of the .idx file, even the .idx is compressed 
-to a .idx.gz file, this entry must record the original .idx file's size, and it 
-must be right too. The .gz file don't contain its original size information, 
-but knowing the original size can speed up the extraction to memory, as you 
-don't need to call realloc() for many times.
-
-idxoffsetbits can be 64 or 32. If "idxoffsetbits=64", the offset field of the 
-.idx file will be 64 bits.
-
-dicttype is used by some special dictionary plugins, such as wordnet. Its value 
-can be "wordnet" presently.
-
-The "sametypesequence" option is described in further detail below.
-
-***
+ */
+class StarDictInfo{
+	/**
+	 * Note that the current "version" string must be "2.4.2" or "3.0.0".  If it's not,
+	 * then StarDict will refuse to read the file.
+	 * If version is "3.0.0", StarDict will parse the "idxoffsetbits" option.
+	 */
+	String version;
+	
+	/**
+	 * dict name
+	 * required
+	 */
+	String bookname;
+	
+	/**
+	 * word count 
+	 * required, and must match the word count in idx file
+	 */
+	int wordcount;
+	
+	/**
+	 * syn word count, required if ".syn" file exists.
+	 */
+	int synwordcount;  
+	
+	/**
+	 * idx file size, must match the original idx file size, even if idx file is gzipped
+	 */
+	long idxfilesize;
+	
+	/**
+	 * idx offset bits, 64(long) or 32(int). if it is 64, then it can support dict data file large than 4G
+	 * New in 3.0.0
+	 */
+	int idxoffsetbits;
+	
+	/**
+	 * author of this dict
+	 */
+	String author;
+	
+	/**
+	 * email address of author
+	 */
+	String email;
+	
+	/**
+	 * website
+	 */
+	String website;
+	
+	/**
+	 * dict description. You can use \<br\> for new line. 
+	 */
+	String description;	
+	
+	/**
+	 * create date of this dictionary
+	 */
+	String date;
+	
+	/**
+	 * The "sametypesequence" option is described in further detail below.
+<pre>
 sametypesequence
 
 You should first familiarize yourself with the .dict file format
@@ -140,26 +150,14 @@ dictionary.
 
 Every dictionary should try to use the sametypesequence feature to
 save disk space.
-***
-
- */
-class StarDictInfo{
-	/**
-	 * Note that the current "version" string must be "2.4.2" or "3.0.0".  If it's not,
-	 * then StarDict will refuse to read the file.
-	 * If version is "3.0.0", StarDict will parse the "idxoffsetbits" option.
+</pre>
 	 */
-	String version;
-	String bookname;   // required
-	int wordcount;     // required
-	int synwordcount;  // required if ".syn" file exists.
-	long idxfilesize;   // required
-	long idxoffsetbits; // New in 3.0.0
-	String author;
-	String email;
-	String website;
-	String description;	// You can use <br> for new line.
-	String date;
 	String sametypesequence; // very important.
+	
+	/**
+	 * dict type.
+	 * dicttype is used by some special dictionary plugins, such as wordnet. 
+	 * Its value can be "wordnet" presently.
+	 */
 	String dicttype;
 }
