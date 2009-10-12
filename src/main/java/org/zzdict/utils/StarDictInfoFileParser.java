@@ -1,12 +1,33 @@
 package org.zzdict.utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 /**
  * StarDict info file parser
  * @author zzh
  *
  */
 public class StarDictInfoFileParser {
+	
+	private String infoFileName;
+	private FileInputStream fis;
 
+	/**
+	 * constructor of StarDictInfoFileParser
+	 * @param infoFileName full info file's name
+	 * @throws FileNotFoundException if info file can not be found
+	 */
+	public StarDictInfoFileParser(String infoFileName) throws FileNotFoundException {
+		this.infoFileName = infoFileName;
+		try{
+			fis = new FileInputStream(infoFileName);
+		}catch(FileNotFoundException e){
+			throw new FileNotFoundException("Info file: "+infoFileName + " could not be found!");
+		}
+	}
+
+	
 	/**
 	 * parse .ifo file to get StarDict info 
 	 * @return StarDictInfo structure that contains dict infos
