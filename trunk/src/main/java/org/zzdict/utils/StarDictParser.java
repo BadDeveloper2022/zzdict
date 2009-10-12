@@ -1,15 +1,11 @@
 package org.zzdict.utils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
 public class StarDictParser {
-	
-	/**
-	 * base folder of all dict files 
-	 */
-	private String dictFilesBaseFolder;
 	
 	/**
 	 * folder that contains dict files
@@ -23,8 +19,32 @@ public class StarDictParser {
 	 */
 	private Map<String, DictDataInfo> indexFileInfo;
 	
+	/**
+	 * 
+	 * @param dictFilesFolder
+	 * @throws FileNotFoundException
+	 */
 	public StarDictParser(String dictFilesFolder) throws FileNotFoundException {
 		this.dictFilesFolder = dictFilesFolder;
+		checkDictFilesFolderValid();
+		initStarDictParser();
+	}
+	
+	private void checkDictFilesFolderValid() throws FileNotFoundException{
+		File f = new File(dictFilesFolder);
+		if(!(f.exists() && f.isDirectory())){
+			throw new FileNotFoundException("Dict folder "+dictFilesFolder + " could not be found!");
+		}
+	}
+	
+	private void initStarDictParser() throws FileNotFoundException{
+		//init infoFileParser
+		String infoFileName="";
+		this.infoFileParser = new StarDictInfoFileParser(infoFileName);
+		
+		//init indexFileParser
+		String indexFileName="";
+		this.indexFileParser = new StarDictIndexFileParser(indexFileName);
 	}
 	
 	private StarDictInfo getStarDictInfo(){

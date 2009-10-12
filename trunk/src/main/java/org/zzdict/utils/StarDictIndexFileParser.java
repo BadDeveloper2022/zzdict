@@ -22,13 +22,26 @@ public class StarDictIndexFileParser {
 	private FileInputStream fis;
 	private int readlimit = 8192;
 	
-	public StarDictIndexFileParser(String indexFileName){
+	/**
+	 * costructor of StarDictIndexFileParser
+	 * @param indexFileName index file name
+	 * @exception FileNotFoundException if file named indexFileName is not found 
+	 */
+	public StarDictIndexFileParser(String indexFileName) throws FileNotFoundException{
 		this.indexFileName = indexFileName;
+		fis = new FileInputStream(indexFileName);
 	}
 	
-	public StarDictIndexFileParser(String indexFileName, String wordEncoding){
+	/**
+	 * costructor of StarDictIndexFileParser
+	 * @param indexFileName index file name
+	 * @param wordEncoding encoding of word in index file
+	 * @exception FileNotFoundException if file named indexFileName is not found 
+	 */
+	public StarDictIndexFileParser(String indexFileName, String wordEncoding) throws FileNotFoundException{
 		this.indexFileName = indexFileName;
 		this.wordEncoding = wordEncoding;
+		fis = new FileInputStream(indexFileName);
 	}
 	
 	/**
@@ -43,12 +56,10 @@ public class StarDictIndexFileParser {
 	 *    word_data_offset;  // word data's offset in .dict file
 	 *    word_data_size;  // word data's total size in .dict file     
 	 * @exception IOException if I/O error occurs
-	 * @exception FileNotFoundException if file named indexFileName is not found 
 	 * @throws FileFormatErrorException if file format is wrong
 	 */
 	public synchronized Map<String, DictDataInfo> parseIndexFile() throws IOException, FileNotFoundException, FileFormatErrorException{
 		Map<String,DictDataInfo> map = new ConcurrentHashMap<String, DictDataInfo>();
-		fis = new FileInputStream(indexFileName);
 		BufferedInputStream bis = new BufferedInputStream(fis);
 		String word;
 		while((word = readString(bis)) != null){
