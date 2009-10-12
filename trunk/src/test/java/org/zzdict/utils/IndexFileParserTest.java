@@ -17,9 +17,9 @@ public class IndexFileParserTest {
 		StarDictIndexFileParser ifp; 
 		Map<String,DictDataInfo> resultMap;
 
-		// stardict1.3.idx contains 51214 words file size is 899,574 bytes
-		ifp = new StarDictIndexFileParser("src/test/resources/stardict/stardict1.3-2.4.2/stardict1.3.idx");
 		try {
+			// stardict1.3.idx contains 51214 words file size is 899,574 bytes
+			ifp = new StarDictIndexFileParser("src/test/resources/stardict/stardict1.3-2.4.2/stardict1.3.idx");
 			resultMap = ifp.parseIndexFile();
 			int i=0;
 			for(Entry<String, DictDataInfo> entry : resultMap.entrySet()){
