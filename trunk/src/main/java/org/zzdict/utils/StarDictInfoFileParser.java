@@ -2,6 +2,9 @@ package org.zzdict.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * StarDict info file parser
@@ -11,7 +14,7 @@ import java.io.FileNotFoundException;
 public class StarDictInfoFileParser {
 	
 	private String infoFileName;
-	private FileInputStream fis;
+	private FileReader reader;
 
 	/**
 	 * constructor of StarDictInfoFileParser
@@ -21,7 +24,7 @@ public class StarDictInfoFileParser {
 	public StarDictInfoFileParser(String infoFileName) throws FileNotFoundException {
 		this.infoFileName = infoFileName;
 		try{
-			fis = new FileInputStream(infoFileName);
+			reader = new FileReader(infoFileName);
 		}catch(FileNotFoundException e){
 			throw new FileNotFoundException("Info file: "+infoFileName + " could not be found!");
 		}
@@ -31,10 +34,19 @@ public class StarDictInfoFileParser {
 	/**
 	 * parse .ifo file to get StarDict info 
 	 * @return StarDictInfo structure that contains dict infos
+	 * @throws IOException if IO error occure when reading ifo file
+	 * @throws MissPropertyException if some required properties are missing
 	 */
-	public StarDictInfo parseStarDictInfo() {
+	public StarDictInfo parseStarDictInfo() throws IOException, MissPropertyException {
+		Properties properties = new Properties();
+		properties.load(reader);
+		StarDictInfo info = new StarDictInfo();
+		info.version = properties.getProperty("version");
+		if (info.version == null)
+			throw new MissPropertyException("miss version property");
+		info.author = properties.getProperty("author");
 		// TODO Auto-generated method stub
-		return null;
+		return info;
 	}
 
 }
@@ -45,6 +57,7 @@ public class StarDictInfoFileParser {
  */
 class StarDictInfo{
 	/**
+	 * dict version, required
 	 * Note that the current "version" string must be "2.4.2" or "3.0.0".  If it's not,
 	 * then StarDict will refuse to read the file.
 	 * If version is "3.0.0", StarDict will parse the "idxoffsetbits" option.
