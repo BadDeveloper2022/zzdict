@@ -1,10 +1,12 @@
 package org.zzdict.utils;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * StarDict info file parser
@@ -35,20 +37,129 @@ public class StarDictInfoFileParser {
 	 * parse .ifo file to get StarDict info 
 	 * @return StarDictInfo structure that contains dict infos
 	 * @throws IOException if IO error occure when reading ifo file
-	 * @throws MissPropertyException if some required properties are missing
+	 * @throws WrongPropertyException if some required properties are missing
 	 */
-	public StarDictInfo parseStarDictInfo() throws IOException, MissPropertyException {
+	public StarDictInfo parseStarDictInfo() throws IOException, WrongPropertyException {
 		Properties properties = new Properties();
 		properties.load(reader);
 		StarDictInfo info = new StarDictInfo();
+		
+		//version required
 		info.version = properties.getProperty("version");
 		if (info.version == null)
-			throw new MissPropertyException("miss version property");
+			throw new WrongPropertyException("version property is required, but it is missing.");
+		
+		//bookname required
+		info.bookname = properties.getProperty("bookname");
+		if (info.bookname == null)
+			throw new WrongPropertyException("bookname property is required, but it is missing.");
+		
+		//wordcount required int
+		String wordcount = properties.getProperty("wordcount");
+		if (wordcount == null)
+			throw new WrongPropertyException("wordcount property is required, but it is missing.");
+		else{
+			try{
+				info.wordcount = Integer.valueOf(wordcount);
+			}catch(NumberFormatException e){
+				throw new WrongPropertyException("wordcount property : "+wordcount + " is not a number.");
+			}
+		}
+
+		//synwordcount required if .syn file exist
+		String synwordcount = properties.getProperty("synwordcount");
+		if (synwordcount == null){
+			if (isOnlyOneFileWithSuffixExistInDictDir(".ifo")){
+				throw new WrongPropertyException("synwordcount property is missing, but a .syn file is found.");
+			}
+		}else{
+			if (!isOnlyOneFileWithSuffixExistInDictDir(".ifo")){
+				throw new WrongPropertyException("synwordcount property exists, but .syn file is missing.");
+			}
+			try{
+				info.synwordcount = Integer.valueOf(synwordcount);
+			}catch(NumberFormatException e){
+				throw new WrongPropertyException("synwordcount property : "+synwordcount + " is not a number.");
+			}			
+		}
+		
+		//idxfilesize required, match original idx file size
+		String idxfilesize = properties.getProperty("idxfilesize");
+		if(idxfilesize == null){
+			throw new WrongPropertyException("idxfilesize property is required, it is missing.");
+		}else{
+			try{
+				info.idxfilesize = Integer.valueOf(idxfilesize);
+			}catch(NumberFormatException e){
+				throw new WrongPropertyException("idxfilesize property : "+idxfilesize + " is not a number.");
+			}
+			
+			long originalIdxFileSize=0;
+			if (isOnlyOneFileWithSuffixExistInDictDir(".idx")){
+				originalIdxFileSize = new File(getNameOfFileWithSuffixInDictDir(".idx")).length();
+			}else if (isOnlyOneFileWithSuffixExistInDictDir(".idx.gz")){
+				originalIdxFileSize = GZipFileUtils.GetUncompressedGZIPFileSize(
+						new File(getNameOfFileWithSuffixInDictDir(".idx.gz"))
+						);
+			}else{
+				throw new FileNotFoundException("idx file is not found.");
+			}
+			
+			if (info.idxfilesize != originalIdxFileSize){
+				throw new WrongPropertyException("idxfilesize property : "+idxfilesize + " don't match the actual idx file size : " + originalIdxFileSize +".");
+			}
+	
+		}
+		
+		//idxoffsetbits, only parse it when version is greater than 3.0.0
 		info.author = properties.getProperty("author");
 		// TODO Auto-generated method stub
 		return info;
 	}
 
+	/**
+	 * check if only one file with given suffix exists in the dict dir
+	 * 
+	 * @param suffix given suffix
+	 * @return true if only one file with given suffix exists, 
+	 * 		   false if not exists or more than one file with given suffix exists
+	 */
+	private boolean isOnlyOneFileWithSuffixExistInDictDir(final String suffix){
+		File infoFile = new File(infoFileName);
+		File infoFilePath = new File(infoFile.getPath());
+	    FilenameFilter filter = new FilenameFilter() {
+	        public boolean accept(File dir, String name) {
+	            return name.endsWith(suffix);
+	        }
+	    };
+		String[] result = infoFilePath.list(filter);
+		if(result != null && result.length == 1)
+			return true;
+		else 
+			return false;			
+	}
+	
+	/**
+	 * get name of file with suffix in dict dir
+	 * @param suffix given suffix
+	 * @return first found name of file, null if no one is found 
+	 */
+	private String getNameOfFileWithSuffixInDictDir(final String suffix){
+		File infoFile = new File(infoFileName);
+		File infoFilePath = new File(infoFile.getPath());
+	    FilenameFilter filter = new FilenameFilter() {
+	        public boolean accept(File dir, String name) {
+	            return name.endsWith(suffix);
+	        }
+	    };
+		String[] result = infoFilePath.list(filter);
+		
+		if(result == null)
+			return null;
+		else
+			return result[0];
+	}
+	
 }
 
 /**
@@ -82,15 +193,15 @@ class StarDictInfo{
 	int synwordcount;  
 	
 	/**
-	 * idx file size, must match the original idx file size, even if idx file is gzipped
+	 * idx file size, required , must match the original idx file size, even if idx file is gzipped
 	 */
 	long idxfilesize;
 	
 	/**
-	 * idx offset bits, 64(long) or 32(int). if it is 64, then it can support dict data file large than 4G
+	 * idx offset bits, 64(long) or 32(int), default is 32. if it is 64, then it can support dict data file large than 4G
 	 * New in 3.0.0
 	 */
-	int idxoffsetbits;
+	int idxoffsetbits = 32;
 	
 	/**
 	 * author of this dict
@@ -173,4 +284,59 @@ save disk space.
 	 * Its value can be "wordnet" presently.
 	 */
 	String dicttype;
+}
+
+class Version{
+	int majorVersion;
+	int medianVersion;
+	int minorVersion;
+	
+	public Version(int majorVersion,int medianVersion,int minorVersion){
+		this.majorVersion = majorVersion;
+		this.medianVersion = medianVersion;
+		this.minorVersion = minorVersion;
+	}
+	
+	/**
+	 * Constructor of Version from a given version string
+	 * @param versionString given version string
+	 * @throws IllegalVersionFormatException when version string is not a valid version string.
+	 * 		valid version string is 3 int connected with '.' like 3.1.2
+	 */
+	public Version(String versionString) throws IllegalVersionFormatException{
+		StringTokenizer st = new StringTokenizer(versionString,".");
+		if (st.countTokens() != 3)
+			throw new IllegalVersionFormatException(versionString + " is not a valid version");
+		try{
+			this.majorVersion = Integer.valueOf(st.nextToken());
+			this.medianVersion = Integer.valueOf(st.nextToken());
+			this.minorVersion = Integer.valueOf(st.nextToken());
+		}catch(NumberFormatException e){
+			throw new IllegalVersionFormatException(versionString + " is not a valid version");
+		}
+	}
+	
+	/**
+	 * convert Version to String
+	 */
+	public String toString(){
+		StringBuffer sb  = new StringBuffer(20);
+		sb.append(majorVersion)
+			.append('.')
+			.append(medianVersion)
+			.append('.')
+			.append(minorVersion);
+		return sb.toString();
+	}
+}
+
+class IllegalVersionFormatException extends IllegalArgumentException{
+
+	private static final long serialVersionUID = 4625282887934585112L;
+
+	public IllegalVersionFormatException(String message) {
+		super(message);
+	}
+	
+
 }
