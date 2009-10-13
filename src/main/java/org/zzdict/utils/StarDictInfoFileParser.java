@@ -385,7 +385,6 @@ class Version implements Comparable<Version> {
 		return sb.toString();
 	}
 
-	@Override
 	public int compareTo(Version o) {
 		if (this.majorVersion > o.majorVersion)
 			return 1;
