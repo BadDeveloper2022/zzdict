@@ -23,6 +23,32 @@ public abstract class WordDataItem {
 	 * @return html code of word explanation
 	 */
 	public abstract String convertWordDataToHtml();
+	
+	/**
+	 * create concreted WordDataItem object by given WordDataType
+	 * @param type given WordDataType
+	 * @return concreted WordDataItem object, null if type is not supported now.
+	 */
+	public static WordDataItem createWordDataItemByType(WordDataType type){
+		switch(type){
+		case ANSI_PURE_TEXT:
+			return new AnsiPureTextWordDataItem();
+		case UTF8_PURE_TEXT:
+			return new Utf8PureTextWordDataItem();
+		default:
+			return null;
+		}
+	}
+}
+
+class ComposiveWordDataItem extends WordDataItem{
+
+	@Override
+	public String convertWordDataToHtml() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }
 
 class PureTextWordDataItem extends WordDataItem {
@@ -73,60 +99,68 @@ class AnsiPureTextWordDataItem extends PureTextWordDataItem {
  * 
  */
 enum WordDataType {
-	UTF8_PURE_TEXT('m', "Word's pure text meaning. "
-			+ "The data should be a utf-8 string ending with '\0'. "), ANSI_PURE_TEXT(
-			'l', "Word's pure text meaning. "
-					+ "The data is NOT a utf-8 string, "
-					+ "but is instead a string in locale encoding, "
-					+ "ending with '\0'.  "
-					+ "Sometimes using this type will save disk space, "
-					+ "but its use is discouraged."), PANGO_MARKUP_UTF8_TEXT(
-			'g',
-			"A utf-8 string which is marked up with the Pango text markup language. "
-					+ "For more information about this markup language, "
-					+ "See the \"Pango Reference Manual.\" "
-					+ "You might have it installed locally at: "
-					+ "file:///usr/share/gtk-doc/html/pango/PangoMarkupFormat.html"), ENGLISH_PHONETIC_UTF8_TEXT(
-			't', "English phonetic string. "
-					+ "The data should be a utf-8 string ending with '\0'. "
-					+ "Here are some utf-8 phonetic characters: "
-					+ "θʃŋʧðʒæıʌʊɒɛəɑɜɔˌˈːˑṃṇḷ" + "æɑɒʌәєŋvθðʃʒɚːɡˏˊˋ"), XDXF_MARKUP_UTF8_TEXT(
-			'x', "A utf-8 string which is marked up with the xdxf language. "
-					+ "See http://xdxf.sourceforge.net "
-					+ "StarDict have these extention: "
-					+ "<rref> can have 'type' attribute, "
-					+ "it can be 'image', 'sound', 'video' and 'attach'. "
-					+ "<kref> can have 'k' attribute."), CHINESE_YINBIAO_OR_JAPANESE_KANA(
-			'y', "Chinese YinBiao or Japanese KANA. "
-					+ "The data should be a utf-8 string ending with '\0'."), POWERWORD_UTF8_XML(
-			'k',
-			"KingSoft PowerWord's data. The data is a utf-8 string ending with '\0'. "
-					+ "It is in XML format."), MEDIA_WIKI_MAKRUP_UTF8_TEXT(
-			'w',
-			"MediaWiki markup language. "
-					+ "See http://meta.wikimedia.org/wiki/Help:Editing#The_wiki_markup"), HTML(
-			'h', "Html codes."), WORDNET('n', "WordNet data."), RESOURCE_FILES(
-			'r',
-			"Resource file list. "
-					+ "The content can be: "
-					+ "img:pic/example.jpg	// Image file "
-					+ "snd:apple.wav		// Sound file "
-					+ "vdo:film.avi		// Video file "
-					+ "att:file.bin		// Attachment file "
-					+ "More than one line is supported as a list of available files. "
-					+ "StarDict will find the files in the Resource Storage. "
-					+ "The image will be shown, the sound file will have a play button. "
-					+ "You can \"save as\" the attachment file and so on."), WAVE_FILE(
-			'W',
-			"wav file. "
-					+ "The data begins with a network byte-ordered guint32 to identify the wav "
-					+ "file's size, immediately followed by the file's content."), PICTURE_FILE(
-			'P',
-			"Picture file. "
-					+ "The data begins with a network byte-ordered guint32 to identify the picture "
-					+ "file's size, immediately followed by the file's content."), RESERVED(
-			'X',
-			"this type identifier is reserved for experimental extensions.");
+	UTF8_PURE_TEXT(
+		'm', "Word's pure text meaning. "
+				+ "The data should be a utf-8 string ending with '\0'. "), 
+	ANSI_PURE_TEXT(
+		'l', "Word's pure text meaning. "
+				+ "The data is NOT a utf-8 string, "
+				+ "but is instead a string in locale encoding, "
+				+ "ending with '\0'.  "
+				+ "Sometimes using this type will save disk space, "
+				+ "but its use is discouraged."), 
+	PANGO_MARKUP_UTF8_TEXT(
+		'g', "A utf-8 string which is marked up with the Pango text markup language. "
+				+ "For more information about this markup language, "
+				+ "See the \"Pango Reference Manual.\" "
+				+ "You might have it installed locally at: "
+				+ "file:///usr/share/gtk-doc/html/pango/PangoMarkupFormat.html"), 
+	ENGLISH_PHONETIC_UTF8_TEXT(
+		't', "English phonetic string. "
+				+ "The data should be a utf-8 string ending with '\0'. "
+				+ "Here are some utf-8 phonetic characters: "
+				+ "θʃŋʧðʒæıʌʊɒɛəɑɜɔˌˈːˑṃṇḷ" + "æɑɒʌәєŋvθðʃʒɚːɡˏˊˋ"), 
+	XDXF_MARKUP_UTF8_TEXT(
+		'x', "A utf-8 string which is marked up with the xdxf language. "
+				+ "See http://xdxf.sourceforge.net "
+				+ "StarDict have these extention: "
+				+ "<rref> can have 'type' attribute, "
+				+ "it can be 'image', 'sound', 'video' and 'attach'. "
+				+ "<kref> can have 'k' attribute."), 
+	CHINESE_YINBIAO_OR_JAPANESE_KANA(
+		'y', "Chinese YinBiao or Japanese KANA. "
+				+ "The data should be a utf-8 string ending with '\0'."), 
+	POWERWORD_UTF8_XML(
+		'k', "KingSoft PowerWord's data. The data is a utf-8 string ending with '\0'. "
+				+ "It is in XML format."), 
+	MEDIA_WIKI_MAKRUP_UTF8_TEXT(
+		'w', "MediaWiki markup language. "
+				+ "See http://meta.wikimedia.org/wiki/Help:Editing#The_wiki_markup"), 
+	HTML(
+		'h', "Html codes."), 
+	WORDNET(
+		'n', "WordNet data."), 
+	RESOURCE_FILES(
+		'r', "Resource file list. "
+				+ "The content can be: "
+				+ "img:pic/example.jpg	// Image file "
+				+ "snd:apple.wav		// Sound file "
+				+ "vdo:film.avi		// Video file "
+				+ "att:file.bin		// Attachment file "
+				+ "More than one line is supported as a list of available files. "
+				+ "StarDict will find the files in the Resource Storage. "
+				+ "The image will be shown, the sound file will have a play button. "
+				+ "You can \"save as\" the attachment file and so on."), 
+	WAVE_FILE(
+		'W', "wav file. "
+				+ "The data begins with a network byte-ordered guint32 to identify the wav "
+				+ "file's size, immediately followed by the file's content."), 
+	PICTURE_FILE(
+			'P', "Picture file. "
+				+ "The data begins with a network byte-ordered guint32 to identify the picture "
+				+ "file's size, immediately followed by the file's content."),
+	RESERVED(
+		'X', "this type identifier is reserved for experimental extensions.");
 
 	/**
 	 * type char is just the char stored in the beginning of each word data
