@@ -24,7 +24,14 @@ public abstract class WordDataItem {
 	 */
 	public abstract String convertWordDataToHtml();
 	
+	/**
+	 * fill word data with part of data of byte array started with startPos
+	 * @param byteArray byte array
+	 * @param startPos start position
+	 * @return first unused byte position in the byte array
+	 */
 	public abstract int fillDataThroughByteArray(byte[] byteArray, int startPos);
+	
 	/**
 	 * create concreted WordDataItem object by given WordDataType
 	 * @param type given WordDataType
@@ -36,6 +43,8 @@ public abstract class WordDataItem {
 			return new AnsiPureTextWordDataItem();
 		case UTF8_PURE_TEXT:
 			return new Utf8PureTextWordDataItem();
+		case ENGLISH_PHONETIC_UTF8_TEXT:
+			return new EnglishPhoneticUtf8TextWordDataItem();
 		default:
 			return null;
 		}
@@ -43,7 +52,8 @@ public abstract class WordDataItem {
 }
 
 abstract class PureTextWordDataItem extends WordDataItem {
-	public String wordExplaination;
+	
+	public String wordExplanation;
 
 	/**
 	 * concreted convert word data to html implementation We should mark
@@ -51,8 +61,7 @@ abstract class PureTextWordDataItem extends WordDataItem {
 	 * samples etc Later, we will apply css to this html code
 	 */
 	public String convertWordDataToHtml() {
-		// TODO convertWordDataToHtml
-		return null;
+		return wordExplanation;
 	}
 
 }
@@ -71,8 +80,11 @@ class Utf8PureTextWordDataItem extends PureTextWordDataItem {
 
 	@Override
 	public int fillDataThroughByteArray(byte[] byteArray, int startPos) {
-		// TODO Auto-generated method stub
-		return 0;
+		int nullCharPos = ByteArrayTools.findNullCharPosition(byteArray, startPos);
+		wordExplanation = ByteArrayTools.convertPartOfArrayToUtf8String(byteArray,startPos,nullCharPos);
+		
+		//skip null char
+		return nullCharPos+1;
 	}
 
 }
@@ -84,16 +96,45 @@ class Utf8PureTextWordDataItem extends PureTextWordDataItem {
  * 
  */
 class AnsiPureTextWordDataItem extends PureTextWordDataItem {
+	
 	public AnsiPureTextWordDataItem() {
 		type = WordDataType.ANSI_PURE_TEXT;
 	}
 
 	@Override
 	public int fillDataThroughByteArray(byte[] byteArray, int startPos) {
-		// TODO Auto-generated method stub
-		return 0;
+		int nullCharPos = ByteArrayTools.findNullCharPosition(byteArray, startPos);
+		wordExplanation = ByteArrayTools.convertPartOfArrayToAnsiString(byteArray,startPos,nullCharPos);
+		
+		//skip null char
+		return nullCharPos+1;
 	}
 
+}
+
+class EnglishPhoneticUtf8TextWordDataItem extends WordDataItem{
+
+	private String phonetic;
+	
+	public EnglishPhoneticUtf8TextWordDataItem(){
+		type = WordDataType.ENGLISH_PHONETIC_UTF8_TEXT;
+	}
+	
+	@Override
+	public String convertWordDataToHtml() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int fillDataThroughByteArray(byte[] byteArray, int startPos) {
+		int nullCharPos = ByteArrayTools.findNullCharPosition(byteArray, startPos);
+		phonetic = ByteArrayTools.convertPartOfArrayToUtf8String(byteArray,startPos,nullCharPos);
+		
+		//skip null char
+		return nullCharPos+1;
+	}
+	
 }
 
 /**
