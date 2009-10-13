@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.zzDict</groupId>
+  <artifactId>zzDict</artifactId>
+  <name>zzDict</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <description>a dictionary program written by java , UI is supported by swt</description>
+  <url>http://code.google.com/p/zzdict</url>
+  <issueManagement>
+  	<system>google code hosting</system>
+  	<url>http://code.google.com/p/zzdict/issues/list</url>
+  </issueManagement>
+  <developers>
+  	<developer>
+  		<id>Zhiheng.Zheng</id>
+  		<name>Zhiheng Zheng</name>
+  		<email>zhiheng.zheng@gmail.com</email>
+  	</developer>
+  </developers>
+  <scm>
+  	<connection>svn</connection>
+  	<developerConnection>zhiheng.zheng</developerConnection>
+  	<url>https://zzdict.googlecode.com/svn/</url>
+  </scm>
+  <organization>
+  </organization>
+  <build>
+  	<sourceDirectory>src/main/java/</sourceDirectory>
+  	<testSourceDirectory>src/test/java</testSourceDirectory>
+  	<testResources>
+  	</testResources>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>javax.servlet</groupId>
+  		<artifactId>servlet-api</artifactId>
+  		<version>2.5</version>
+  	</dependency>
+  </dependencies>
+</project>
