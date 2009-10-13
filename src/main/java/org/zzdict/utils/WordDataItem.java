@@ -24,6 +24,7 @@ public abstract class WordDataItem {
 	 */
 	public abstract String convertWordDataToHtml();
 	
+	public abstract int fillDataThroughByteArray(byte[] byteArray, int startPos);
 	/**
 	 * create concreted WordDataItem object by given WordDataType
 	 * @param type given WordDataType
@@ -41,17 +42,7 @@ public abstract class WordDataItem {
 	}
 }
 
-class ComposiveWordDataItem extends WordDataItem{
-
-	@Override
-	public String convertWordDataToHtml() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-}
-
-class PureTextWordDataItem extends WordDataItem {
+abstract class PureTextWordDataItem extends WordDataItem {
 	public String wordExplaination;
 
 	/**
@@ -60,6 +51,7 @@ class PureTextWordDataItem extends WordDataItem {
 	 * samples etc Later, we will apply css to this html code
 	 */
 	public String convertWordDataToHtml() {
+		// TODO convertWordDataToHtml
 		return null;
 	}
 
@@ -77,6 +69,12 @@ class Utf8PureTextWordDataItem extends PureTextWordDataItem {
 		type = WordDataType.UTF8_PURE_TEXT;
 	}
 
+	@Override
+	public int fillDataThroughByteArray(byte[] byteArray, int startPos) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
 
 /**
@@ -88,6 +86,12 @@ class Utf8PureTextWordDataItem extends PureTextWordDataItem {
 class AnsiPureTextWordDataItem extends PureTextWordDataItem {
 	public AnsiPureTextWordDataItem() {
 		type = WordDataType.ANSI_PURE_TEXT;
+	}
+
+	@Override
+	public int fillDataThroughByteArray(byte[] byteArray, int startPos) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
