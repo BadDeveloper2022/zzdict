@@ -3,13 +3,13 @@ package org.zzdict.utils;
 import java.util.ArrayList;
 
 public class StdDict extends BaseDict {
-	
+
 	private String indexFileName;
 	private boolean isIndexFileZipped;
-	
+
 	private String dictFileName;
-	private boolean  isDictFileZipped;
-	
+	private boolean isDictFileZipped;
+
 	public StdDict(String fileName) {
 		super(fileName);
 		// TODO Auto-generated constructor stub
@@ -42,7 +42,7 @@ public class StdDict extends BaseDict {
 	@Override
 	public void init(String fileName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -56,5 +56,5 @@ public class StdDict extends BaseDict {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }
