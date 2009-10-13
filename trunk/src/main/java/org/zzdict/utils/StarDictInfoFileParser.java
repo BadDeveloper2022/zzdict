@@ -90,12 +90,12 @@ public class StarDictInfoFileParser {
 		// synwordcount required if .syn file exist
 		String synwordcount = properties.getProperty("synwordcount");
 		if (synwordcount == null) {
-			if (isOnlyOneFileWithSuffixExistInDictDir(".ifo")) {
+			if (isOnlyOneFileWithSuffixExistInDictDir(".syn")) {
 				throw new WrongPropertyException(
 						"synwordcount property is missing, but a .syn file is found.");
 			}
 		} else {
-			if (!isOnlyOneFileWithSuffixExistInDictDir(".ifo")) {
+			if (!isOnlyOneFileWithSuffixExistInDictDir(".syn")) {
 				throw new WrongPropertyException(
 						"synwordcount property exists, but .syn file is missing.");
 			}
@@ -177,7 +177,7 @@ public class StarDictInfoFileParser {
 	 */
 	private boolean isOnlyOneFileWithSuffixExistInDictDir(final String suffix) {
 		File infoFile = new File(infoFileName);
-		File infoFilePath = new File(infoFile.getPath());
+		File infoFilePath = infoFile.getParentFile();
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.endsWith(suffix);
@@ -199,7 +199,7 @@ public class StarDictInfoFileParser {
 	 */
 	private String getNameOfFileWithSuffixInDictDir(final String suffix) {
 		File infoFile = new File(infoFileName);
-		File infoFilePath = new File(infoFile.getPath());
+		File infoFilePath = infoFile.getParentFile();
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.endsWith(suffix);
@@ -210,7 +210,7 @@ public class StarDictInfoFileParser {
 		if (result == null)
 			return null;
 		else
-			return result[0];
+			return infoFile.getParent() + File.separator + result[0];
 	}
 
 }
