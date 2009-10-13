@@ -198,19 +198,8 @@ public class StarDictInfoFileParser {
 	 * @return first found name of file, null if no one is found
 	 */
 	private String getNameOfFileWithSuffixInDictDir(final String suffix) {
-		File infoFile = new File(infoFileName);
-		File infoFilePath = infoFile.getParentFile();
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(suffix);
-			}
-		};
-		String[] result = infoFilePath.list(filter);
-
-		if (result == null)
-			return null;
-		else
-			return infoFile.getParent() + File.separator + result[0];
+		String dictPath = new File(infoFileName).getParent();
+		return FileUtils.getNameOfFileWithSuffixInDir(dictPath, suffix);
 	}
 
 }
