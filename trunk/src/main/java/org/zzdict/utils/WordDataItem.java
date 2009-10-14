@@ -53,7 +53,7 @@ public abstract class WordDataItem {
 
 abstract class PureTextWordDataItem extends WordDataItem {
 	
-	public String wordExplanation;
+	protected String wordExplanation;
 
 	/**
 	 * concreted convert word data to html implementation We should mark
@@ -61,6 +61,10 @@ abstract class PureTextWordDataItem extends WordDataItem {
 	 * samples etc Later, we will apply css to this html code
 	 */
 	public String convertWordDataToHtml() {
+		return wordExplanation;
+	}
+
+	public String getWordExplanation() {
 		return wordExplanation;
 	}
 
@@ -120,6 +124,10 @@ class EnglishPhoneticUtf8TextWordDataItem extends WordDataItem{
 		type = WordDataType.ENGLISH_PHONETIC_UTF8_TEXT;
 	}
 	
+	public String getPhonetic() {
+		return phonetic;
+	}
+
 	@Override
 	public String convertWordDataToHtml() {
 		// TODO Auto-generated method stub

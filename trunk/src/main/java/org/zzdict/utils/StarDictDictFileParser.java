@@ -51,8 +51,7 @@ public class StarDictDictFileParser {
 		}
 		
 		//read word datas into a byte buffer
-		byte[] buf = new byte[dataInfo.wordDataSize];
-		accessor.readData(dataInfo.wordDataOffset, dataInfo.wordDataSize);
+		byte[] buf = accessor.readData(dataInfo.wordDataOffset, dataInfo.wordDataSize);
 		
 		List<WordDataItem> list = new ArrayList<WordDataItem>();
 		Position pos = new Position(0);

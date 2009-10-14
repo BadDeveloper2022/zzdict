@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +37,13 @@ public class StarDictDictFileParserTest {
 		dataInfo = new DictDataInfo(635594, 65);
 		try {
 			list = dictFileParser.getWordDatas(word, dataInfo, dictInfo);
-			fail("");
+			Assert.assertEquals(list.size(), 2);
+			Assert.assertEquals(list.get(0).type, WordDataType.ENGLISH_PHONETIC_UTF8_TEXT);
+			Assert.assertEquals(((EnglishPhoneticUtf8TextWordDataItem)list.get(0)).getPhonetic(),
+					"huk");
+			Assert.assertEquals(list.get(1).type, WordDataType.UTF8_PURE_TEXT);
+			Assert.assertEquals(((PureTextWordDataItem)list.get(1)).getWordExplanation(),
+					"n. 钩,钩状,镰刀;\nv. 挂...于钩上,弯成钩状,偷窃;");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
