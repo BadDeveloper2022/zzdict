@@ -3,6 +3,7 @@ package org.zzdict.utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,11 +71,6 @@ public class StarDictParser {
 		this.dictFileParser = new StarDictDictFileParser(dictFileName);
 	}
 
-	private StarDictInfo getStarDictInfo() throws IOException,
-			WrongPropertyException {
-		return infoFileParser.parseStarDictInfo();
-	}
-
 	private void loadDictIndexInfoToMemory() {
 		try {
 			this.indexFileInfo = indexFileParser.parseIndexFile();
@@ -100,7 +96,10 @@ public class StarDictParser {
 	 * @throws FileNotFoundException 
 	 */
 	public List<WordDataItem> getWordDatas(String word) throws FileNotFoundException, IOException {
-		return dictFileParser.getWordDatas(word, indexFileInfo.get(word), dictInfo);
+		if (indexFileInfo.get(word) == null)
+			return new ArrayList<WordDataItem>();
+		else
+			return dictFileParser.getWordDatas(word, indexFileInfo.get(word), dictInfo);
 	}
 
 }

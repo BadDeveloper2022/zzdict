@@ -24,7 +24,7 @@ public class FileUtils {
 		};
 		String[] result = path.list(filter);
 
-		if (result == null)
+		if (result == null || result.length == 0)
 			return null;
 		else
 			return dir + File.separator + result[0];

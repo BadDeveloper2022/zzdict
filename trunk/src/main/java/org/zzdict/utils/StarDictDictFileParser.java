@@ -31,9 +31,9 @@ public class StarDictDictFileParser {
 	 *            the word
 	 * @param dataInfo
 	 *            dataInfo that contains wordDateItem type, position and length
-	 *            information
+	 *            information, not null
 	 * @param dictInfo
-	 * 			dict infos, most importantly, it contains samesequencetype info
+	 * 			dict infos, most importantly, it contains samesequencetype info, not null
 	 * @return a list of WordDataItem that contains word's explanation, sentences examples
 	 *         etc, not null
 	 * @throws IOException
@@ -43,6 +43,8 @@ public class StarDictDictFileParser {
 	public List<WordDataItem> getWordDatas(String word, DictDataInfo dataInfo, StarDictInfo dictInfo)
 			throws FileNotFoundException, IOException {
 		IDataAccessor accessor;
+
+		List<WordDataItem> list = new ArrayList<WordDataItem>();
 		
 		if (isDictFileGzipped()) {
 			accessor = new DictZipDataAccessor(dictFileName);
@@ -53,7 +55,6 @@ public class StarDictDictFileParser {
 		//read word datas into a byte buffer
 		byte[] buf = accessor.readData(dataInfo.wordDataOffset, dataInfo.wordDataSize);
 		
-		List<WordDataItem> list = new ArrayList<WordDataItem>();
 		Position pos = new Position(0);
 		WordDataItem item;
 		
