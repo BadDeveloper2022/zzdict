@@ -37,8 +37,8 @@
 			<artifactId>maven-compiler-plugin</artifactId>
 			<version>2.0.2</version>
 			<configuration>
-				<source>1.5</source>
-				<target>1.5</target>
+				<source>1.6</source>
+				<target>1.6</target>
 			</configuration>
 		</plugin>
 	</plugins>
@@ -49,5 +49,15 @@
   		<artifactId>servlet-api</artifactId>
   		<version>2.5</version>
   	</dependency>
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>swt</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+        </dependency>
   </dependencies>
 </project>
